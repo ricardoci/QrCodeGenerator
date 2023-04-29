@@ -5,64 +5,48 @@
 	<script type="text/javascript" src="jquery.min.js"></script>
 	<script type="text/javascript" src="qrcode.js"></script>
 	<link rel="stylesheet" href="style.css">
-	</head>
-	<body>
+</head>
+<body>
 	<input id="text" type="text" value="start" style="width:80%" /><br />
 	<div id="qrcode" style="width:100px; height:100px; margin-top:15px;"></div>
-	
+
 	<button onclick="getLocation()">Get Location</button>
-	
+
 	<script type="text/javascript">
-	
-	
-	
-	
-	var qrcode = new QRCode(document.getElementById("qrcode"), {
+	  var qrcode = new QRCode(document.getElementById("qrcode"), {
 		width : 100,
 		height : 100
-	});
-	
-	function makeCode () {		
-		
-		var elText = document.getElementById("text");
-		
-		if (!elText.value) {
-			alert("Input a text");
-			elText.focus();
-			return;
-		}
-		
-		qrcode.makeCode(elText.value);
-	}
-	
-	makeCode();
-	
-	$("#text").
+	  });
+
+
+	  makeCode();
+
+	  $("#text").
 		on("blur", function () {
-			makeCode();
+		  makeCode();
 		}).
 		on("keydown", function (e) {
-			if (e.keyCode == 13) {
-				makeCode();
-			}
+		  if (e.keyCode == 13) {
+			makeCode();
+		  }
 		});
-	
-	function getLocation() {
-	  if (navigator.geolocation) {
-		navigator.geolocation.getCurrentPosition(showPosition);
-	  } else {
-		alert("Geolocation is not supported by this browser.");
+
+	  function showPosition(position) {
+		var lat = position.coords.latitude;
+		var long = position.coords.longitude;
+		var url = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + long;
+
+		document.getElementById("text").value = url;
+		qrcode.clear();
+		qrcode.makeCode(url);
 	  }
-	}
-	
-	function showPosition(position) {
-	  var lat = position.coords.latitude;
-	  var long = position.coords.longitude;
-	  var url = "https://www.google.com/maps/search/?api=1&query=" + lat + "," + long;
-	  document.getElementById("text").value = url;
-	  makeCode();
-	}	  
+
+	  function getLocation() {
+		if (navigator.geolocation) {
+		  navigator.geolocation.getCurrentPosition(showPosition);
+		} else {
+		  alert("Geolocation is not supported by this browser.");
+		}
+	  }     
 	</script>
-	
-	</body>
-	
+</body>
